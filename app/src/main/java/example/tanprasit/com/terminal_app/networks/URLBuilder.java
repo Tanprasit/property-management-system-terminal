@@ -1,14 +1,13 @@
-package example.tanprasit.com.terminal_app.network;
+package example.tanprasit.com.terminal_app.networks;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import example.tanprasit.com.terminal_app.Constants;
 
 /**
  * Created by luketanprasit on 07/03/2016.
  */
 public class URLBuilder {
 
+//    private String baseURL= "http://ec2-54-229-185-207.eu-west-1.compute.amazonaws.com/";
     private String baseURL = "192.168.0.7:8000";
     private String requestURL;
 
@@ -32,6 +31,12 @@ public class URLBuilder {
     public String getDeviceUrl(int id) {
         this.addRelativePath(1, "devices" + "/" + id);
         return  this.requestURL;
+    }
+
+    public String getWeatherUrl(double latitude, double longitude) {
+        return  "https://api.forecast.io/forecast/"
+                + Constants.WEATHER_API_KEY + "/"
+                + latitude + "," + longitude;
     }
 
     public String getRequestURL() {

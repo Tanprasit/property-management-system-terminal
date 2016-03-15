@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:orientation="vertical"
     tools:context="example.tanprasit.com.terminal_app.terminal_app.WebActivity">
 
-    <FrameLayout
+    <fragment
+        android:name="example.tanprasit.com.terminal_app.fragments.WebFragment"
         android:id="@+id/fragment_web"
-        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <fragment
+        android:name="example.tanprasit.com.terminal_app.fragments.WeatherFragment"
+        android:id="@+id/fragment_weather"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>

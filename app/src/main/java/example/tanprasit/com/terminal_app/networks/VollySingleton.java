@@ -1,4 +1,4 @@
-package example.tanprasit.com.terminal_app.network;
+package example.tanprasit.com.terminal_app.networks;
 
 import android.content.Context;
 

@@ -1,0 +1,22 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="example.tanprasit.com.terminal_app.fragments.WeatherFragment">
+
+    <TextView
+        android:id="@+id/fragment_weather_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <TextView
+            android:id="@+id/fragment_weather_view"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+</FrameLayout>

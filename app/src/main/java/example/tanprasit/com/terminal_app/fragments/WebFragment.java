@@ -19,7 +19,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -29,8 +28,8 @@ import example.tanprasit.com.terminal_app.R;
 import example.tanprasit.com.terminal_app.activities.MainActivity;
 import example.tanprasit.com.terminal_app.models.Device;
 import example.tanprasit.com.terminal_app.models.Notification;
-import example.tanprasit.com.terminal_app.network.URLBuilder;
-import example.tanprasit.com.terminal_app.network.VollySingleton;
+import example.tanprasit.com.terminal_app.networks.URLBuilder;
+import example.tanprasit.com.terminal_app.networks.VollySingleton;
 
 /**
  * A simple {@link Fragment} subclass.

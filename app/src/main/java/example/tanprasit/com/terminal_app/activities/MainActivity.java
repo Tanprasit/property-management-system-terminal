@@ -24,8 +24,8 @@ import java.util.Map;
 import example.tanprasit.com.terminal_app.Constants;
 import example.tanprasit.com.terminal_app.R;
 import example.tanprasit.com.terminal_app.models.Device;
-import example.tanprasit.com.terminal_app.network.URLBuilder;
-import example.tanprasit.com.terminal_app.network.VollySingleton;
+import example.tanprasit.com.terminal_app.networks.URLBuilder;
+import example.tanprasit.com.terminal_app.networks.VollySingleton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
-
 
         // Instantiate the RequestQueue.
         RequestQueue queue = VollySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
