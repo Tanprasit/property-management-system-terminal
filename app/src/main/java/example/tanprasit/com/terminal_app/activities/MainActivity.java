@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -90,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("error status code ", error.getMessage());
                 Toast.makeText(getApplicationContext(), "Something is wrong", Toast.LENGTH_SHORT).show();
             }
         }) {
@@ -106,6 +106,14 @@ public class MainActivity extends AppCompatActivity {
                 return params;
             }
         };
+
+        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
+                // 35 seconds timeout
+                35000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }

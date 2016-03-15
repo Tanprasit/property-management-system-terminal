@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -147,10 +148,15 @@ public class WebFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("error status code ", error.getMessage());
                 Toast.makeText(getActivity(), "Something is wrong", Toast.LENGTH_SHORT).show();
             }
         });
+
+        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
