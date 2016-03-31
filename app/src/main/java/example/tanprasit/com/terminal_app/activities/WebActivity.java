@@ -40,6 +40,6 @@ public class WebActivity extends AppCompatActivity {
 
         fragmentTransaction.commit();
 
-        new FragmentSwitcher(10000, 1000, 1, this).start();
+        new FragmentSwitcher(30000, 1000, 1, this).start();
     }
 }

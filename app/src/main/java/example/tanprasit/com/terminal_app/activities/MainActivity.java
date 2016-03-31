@@ -27,6 +27,7 @@ import example.tanprasit.com.terminal_app.R;
 import example.tanprasit.com.terminal_app.models.Device;
 import example.tanprasit.com.terminal_app.networks.URLBuilder;
 import example.tanprasit.com.terminal_app.networks.VollySingleton;
+import example.tanprasit.com.terminal_app.services.GPSTracker;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
     private void updateDeviceObject() {
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
         String deviceString = sharedPreferences.getString(Constants.DEVICE_OBJECT, null);
+
+        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
+        final String latitude = String.valueOf(gpsTracker.getLatitude());
+        final String longitude = String.valueOf(gpsTracker.getLongitude());
+
         String url = "";
         URLBuilder urlBuilder;
 
@@ -103,11 +109,16 @@ public class MainActivity extends AppCompatActivity {
                 params.put("product", Build.PRODUCT);
                 params.put("serial_number", Build.SERIAL);
 
+                if (!latitude.equals("0.0") && !longitude.equals("0.0")) {
+                    params.put("latitude", latitude);
+                    params.put("longitude", longitude);
+                }
+
                 return params;
             }
         };
 
-        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
                 // 35 seconds timeout
                 35000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -127,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
     private void registerDeviceDetails() {
         URLBuilder urlBuilder = new URLBuilder();
         String url = urlBuilder.getDeviceRegisterUrl();
+
+        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
+        final String latitude = String.valueOf(gpsTracker.getLatitude());
+        final String longitude = String.valueOf(gpsTracker.getLongitude());
 
         // Instantiate the RequestQueue.
         RequestQueue queue = VollySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
@@ -157,12 +172,14 @@ public class MainActivity extends AppCompatActivity {
                 params.put("sdk_version", String.valueOf(Build.VERSION.SDK_INT));
                 params.put("product", Build.PRODUCT);
                 params.put("serial_number", Build.SERIAL);
+                params.put("latitude", latitude);
+                params.put("longitude", longitude);
 
                 return params;
             }
         };
 
-        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
                 // 35 seconds timeout
                 35000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,

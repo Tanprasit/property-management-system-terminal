@@ -62,6 +62,6 @@ public class FragmentSwitcher extends CountDownTimer {
             fragmentId++;
         }
 
-        new FragmentSwitcher(10000, 1000, fragmentId, activity).start();
+        new FragmentSwitcher(30000, 1000, fragmentId, activity).start();
     }
 }
