@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="example.tanprasit.com.terminal_app.fragments.WebFragment">
+    tools:context=".fragments.NotificationFragment">
 
     <WebView
         android:id="@+id/fragment_web_webview"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 
 </FrameLayout>

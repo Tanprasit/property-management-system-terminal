@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +34,12 @@ import example.tanprasit.com.terminal_app.networks.VollySingleton;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link WebFragment.OnFragmentInteractionListener} interface
+ * {@link NotificationFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link WebFragment#newInstance} factory method to
+ * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WebFragment extends Fragment {
+public class NotificationFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -54,11 +53,12 @@ public class WebFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private WebView mWebView;
-
     private final Gson gson = new Gson();
+    private WebView mWebView;
+    private int notificationIndex = 0;
+    private boolean isHidden = true;
 
-    public WebFragment() {
+    public NotificationFragment() {
         // Required empty public constructor
     }
 
@@ -71,8 +71,8 @@ public class WebFragment extends Fragment {
      * @return A new instance of fragment WebFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WebFragment newInstance(String param1, String param2) {
-        WebFragment fragment = new WebFragment();
+    public static NotificationFragment newInstance(String param1, String param2) {
+        NotificationFragment fragment = new NotificationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -85,12 +85,6 @@ public class WebFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    private void displayNotification(final WebView webView, Notification notification) {
-
-        // Display the first 500 characters of the response string.
-        webView.loadDataWithBaseURL(null, notification.getData(), "text/html", "UTF-8", null);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -101,11 +95,9 @@ public class WebFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.mWebView = (WebView) view.findViewById(R.id.fragment_web_webview);
+        mWebView = (WebView) view.findViewById(R.id.fragment_web_webview);
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
-
-        String deviceString = sharedPreferences.getString(Constants.DEVICE_OBJECT, null);
+        String deviceString = getDeviceObjectFromPref();
 
         if (null != deviceString) {
             this.device = gson.fromJson(deviceString, Device.class);
@@ -118,13 +110,79 @@ public class WebFragment extends Fragment {
 
         if (notificationList.size() > 0) {
             updateDeviceNotifications(device);
-            displayNotification(this.mWebView, notificationList.get(0));
+            displayNotification(this.mWebView, notificationList.get(this.notificationIndex++));
         } else {
-            Toast.makeText(getActivity(), "No notifications to show", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "No notifications to show", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
         }
     }
+
+    private String getDeviceObjectFromPref() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(Constants.DEVICE_OBJECT, null);
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        // When notification screen switches out. Because we are using onHiddenChanged this will
+        // be triggered twice, once on appearing and another when disappearing.
+        if (isHidden) {
+            updateDeviceNotifications(device);
+
+            String deviceString = getDeviceObjectFromPref();
+
+            if (deviceString != null) {
+                this.device = gson.fromJson(deviceString, Device.class);
+
+                int notificationListSize = this.device.getNotificationsList().size();
+                if (notificationListSize > 0) {
+                    Notification notification = this.device.getNotificationsList().get(this.notificationIndex);
+                    this.notificationIndex = (this.notificationIndex + 1) % notificationListSize;
+                    displayNotification(this.mWebView, notification);
+                }
+            }
+            this.isHidden = false;
+        } else {
+            this.isHidden = true;
+        }
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p/>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+    private void displayNotification(final WebView webView, Notification notification) {
+
+        webView.loadDataWithBaseURL(null, notification.getData(), "text/html", "UTF-8", null);
+    }
+
 
     private void updateDeviceNotifications(Device device) {
         URLBuilder urlBuilder = new URLBuilder();
@@ -144,6 +202,7 @@ public class WebFragment extends Fragment {
                         editor.clear();
                         editor.putString(Constants.DEVICE_OBJECT, response);
                         editor.apply();
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -159,34 +218,5 @@ public class WebFragment extends Fragment {
         ));
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

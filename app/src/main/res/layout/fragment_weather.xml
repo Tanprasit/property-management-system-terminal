@@ -4,9 +4,18 @@
     android:layout_height="match_parent"
     tools:context="example.tanprasit.com.terminal_app.fragments.WeatherFragment">
 
+    <ImageView
+        android:id="@+id/fragment_weather_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.6"
+        android:contentDescription="@string/weather_image"
+        android:scaleType="fitXY" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="1"
         android:padding="@dimen/abc_action_bar_content_inset_material">
 
         <TextView
@@ -15,8 +24,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/fragment_weather_temperature"
             android:gravity="center"
-            android:text="Partly Cloudy"
-            android:textSize="@dimen/abc_text_size_menu_material" />
+            android:textColor="@color/defaultTextColor"
+            android:textSize="@dimen/abc_text_size_large_material" />
 
         <TextView
             android:id="@+id/fragment_weather_temperature"
@@ -24,8 +33,9 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/fragment_weather_percip"
             android:gravity="center"
-            android:text="12"
-            android:textSize="@dimen/abc_text_size_display_4_material" />
+            android:textColor="@color/defaultTextColor"
+            android:textSize="@dimen/abc_text_size_display_3_material"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/fragment_weather_percip"
@@ -33,7 +43,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/fragment_weather_humidity"
             android:gravity="center"
-            android:text="Percipitation: 0%" />
+            android:textColor="@color/defaultTextColor"
+            android:textSize="@dimen/abc_text_size_medium_material" />
 
         <TextView
             android:id="@+id/fragment_weather_humidity"
@@ -41,7 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/fragment_weather_wind"
             android:gravity="center"
-            android:text="Humidity: 59%" />
+            android:textColor="@color/defaultTextColor"
+            android:textSize="@dimen/abc_text_size_medium_material" />
 
         <TextView
             android:id="@+id/fragment_weather_wind"
@@ -49,36 +61,44 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/fragment_day_header"
             android:gravity="center"
-            android:text="Wind: 11mph" />
+            android:textColor="@color/defaultTextColor"
+            android:textSize="@dimen/abc_text_size_medium_material" />
 
         <LinearLayout
             android:id="@+id/fragment_day_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/fragment_day_1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/navigation_icon_padding">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor" />
 
-        <TextView
-            android:id="@+id/fragment_temp_max"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/max" />
+            <TextView
+                android:id="@+id/fragment_temp_max"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/max"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/fragment_temp_min"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:text="@string/min" />
-
+            <TextView
+                android:id="@+id/fragment_temp_min"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/min"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -86,27 +106,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/abc_edit_text_inset_top_material">
 
             <TextView
                 android:id="@+id/fragment_day_1_day"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_1_temp_high"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_1_temp_min"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
         </LinearLayout>
 
@@ -115,27 +142,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_day_1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/abc_edit_text_inset_top_material">
 
             <TextView
                 android:id="@+id/fragment_day_2_day"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_2_temp_high"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_2_temp_min"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
         </LinearLayout>
 
@@ -144,27 +178,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_day_2"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/abc_edit_text_inset_top_material">
 
             <TextView
                 android:id="@+id/fragment_day_3_day"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_3_temp_high"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_3_temp_min"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
         </LinearLayout>
 
@@ -173,27 +214,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_day_3"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/abc_edit_text_inset_top_material">
 
             <TextView
                 android:id="@+id/fragment_day_4_day"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_4_temp_high"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_4_temp_min"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
         </LinearLayout>
 
         <LinearLayout
@@ -201,27 +249,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_day_4"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/abc_edit_text_inset_top_material">
 
             <TextView
                 android:id="@+id/fragment_day_5_day"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_5_temp_high"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_5_temp_min"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
         </LinearLayout>
 
@@ -230,27 +285,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_day_5"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/abc_edit_text_inset_top_material">
 
             <TextView
                 android:id="@+id/fragment_day_6_day"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_6_temp_high"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_6_temp_min"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
         </LinearLayout>
 
@@ -259,28 +321,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fragment_day_6"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/abc_edit_text_inset_top_material">
 
             <TextView
                 android:id="@+id/fragment_day_7_day"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_7_temp_high"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
 
             <TextView
                 android:id="@+id/fragment_day_7_temp_min"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end" />
+                android:gravity="end"
+                android:textColor="@color/defaultTextColor"
+                android:textSize="@dimen/abc_text_size_large_material" />
         </LinearLayout>
-
     </RelativeLayout>
 </FrameLayout>

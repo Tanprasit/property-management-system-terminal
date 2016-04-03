@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             updateDeviceObject();
             // Intent to web activity
-            Toast.makeText(this, "Loading notifications...", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Loading notifications...", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, WebActivity.class);
             startActivity(intent);
         }
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 params.put("product", Build.PRODUCT);
                 params.put("serial_number", Build.SERIAL);
 
-                if (!latitude.equals("0.0") && !longitude.equals("0.0")) {
+                if (!latitude.equals(String.valueOf(0d)) && !longitude.equals(String.valueOf(0d))) {
                     params.put("latitude", latitude);
                     params.put("longitude", longitude);
                 }
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadActivity() {
-        Toast.makeText(getApplicationContext(), "Finished registering current device, reloading...", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), "Finished registering current device, reloading...", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
@@ -172,8 +172,11 @@ public class MainActivity extends AppCompatActivity {
                 params.put("sdk_version", String.valueOf(Build.VERSION.SDK_INT));
                 params.put("product", Build.PRODUCT);
                 params.put("serial_number", Build.SERIAL);
-                params.put("latitude", latitude);
-                params.put("longitude", longitude);
+
+                if (!latitude.equals(String.valueOf(0d)) && !longitude.equals(String.valueOf(0d))) {
+                    params.put("latitude", latitude);
+                    params.put("longitude", longitude);
+                }
 
                 return params;
             }

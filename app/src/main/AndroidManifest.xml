@@ -27,6 +27,7 @@
         <activity
             android:name="example.tanprasit.com.terminal_app.activities.WebActivity"
             android:label="@string/title_activity_web"
+            android:screenOrientation="sensorPortrait"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

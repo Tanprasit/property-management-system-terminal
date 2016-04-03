@@ -30,7 +30,6 @@ public class FragmentSwitcher extends CountDownTimer {
 
     @Override
     public void onTick(long millisUntilFinished) {
-
     }
 
     @Override
@@ -52,16 +51,20 @@ public class FragmentSwitcher extends CountDownTimer {
         }
 
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction.commit();
-        fragmentManager.executePendingTransactions();
 
-
-        if (fragmentId == totalFragmentCount) {
-            fragmentId = 1;
+        // If activity was already destroyed cancel the switch.
+        if (this.activity.isDestroyed()) {
+            this.cancel();
         } else {
-            fragmentId++;
-        }
+            fragmentTransaction.commit();
+            fragmentManager.executePendingTransactions();
+            if (fragmentId == totalFragmentCount) {
+                fragmentId = 1;
+            } else {
+                fragmentId++;
+            }
 
-        new FragmentSwitcher(30000, 1000, fragmentId, activity).start();
+            new FragmentSwitcher(20000, 1000, fragmentId, activity).start();
+        }
     }
 }

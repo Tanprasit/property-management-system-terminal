@@ -8,4 +8,5 @@
     <string name="finished">Finished</string>
     <string name="max">Max</string>
     <string name="min">Min</string>
+    <string name="weather_image">weather_image</string>
 </resources>

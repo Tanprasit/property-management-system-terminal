@@ -10,7 +10,7 @@ import example.tanprasit.com.terminal_app.R;
 import example.tanprasit.com.terminal_app.fragments.FragmentList;
 import example.tanprasit.com.terminal_app.fragments.FragmentSwitcher;
 import example.tanprasit.com.terminal_app.fragments.WeatherFragment;
-import example.tanprasit.com.terminal_app.fragments.WebFragment;
+import example.tanprasit.com.terminal_app.fragments.NotificationFragment;
 
 public class WebActivity extends AppCompatActivity {
 
@@ -27,19 +27,24 @@ public class WebActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        // Generate Fragments for fragment switcher.
-        Fragment weatherFragment = new WeatherFragment();
-        Fragment webFragment = new WebFragment();
+        Fragment weatherFragment;
+        Fragment webFragment;
 
-        FragmentList.list.add(weatherFragment);
-        FragmentList.list.add(webFragment);
+        if (savedInstanceState == null) {
+            // Generate Fragments for fragment switcher.
+            weatherFragment = new WeatherFragment();
+            webFragment = new NotificationFragment();
 
-        for (Fragment fragment : FragmentList.list) {
-            fragmentTransaction.add(fragment.getId(), fragment);
+            FragmentList.list.add(weatherFragment);
+            FragmentList.list.add(webFragment);
+
+            for (Fragment fragment : FragmentList.list) {
+                fragmentTransaction.add(fragment.getId(), fragment, String.valueOf(FragmentList.list.indexOf(fragment)));
+            }
+
+            fragmentTransaction.commit();
         }
 
-        fragmentTransaction.commit();
-
-        new FragmentSwitcher(30000, 1000, 1, this).start();
+        new FragmentSwitcher(20000, 1000, 1, this).start();
     }
 }

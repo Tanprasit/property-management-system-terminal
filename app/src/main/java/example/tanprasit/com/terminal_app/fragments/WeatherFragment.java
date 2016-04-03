@@ -77,13 +77,6 @@ public class WeatherFragment extends Fragment {
         GPSTracker gpsTracker = new GPSTracker(getActivity());
         String url = new URLBuilder().getWeatherUrl(gpsTracker.getLatitude(), gpsTracker.getLongitude());
 
-        this.weatherReceiver = new WeatherBroadcastReceiver();
-
-        // Register receiver
-        IntentFilter intentFilter = new IntentFilter(Constants.WEATHER_RESPONSE);
-        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        getActivity().registerReceiver(weatherReceiver, intentFilter);
-
         Intent weatherIntent = new Intent(getActivity(), WeatherService.class);
         weatherIntent.putExtra(Constants.URL, url);
         getActivity().startService(weatherIntent);
@@ -102,6 +95,23 @@ public class WeatherFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register receiver
+        IntentFilter intentFilter = new IntentFilter(Constants.WEATHER_RESPONSE);
+        intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+
+        this.weatherReceiver = new WeatherBroadcastReceiver();
+        getActivity().registerReceiver(weatherReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(this.weatherReceiver);
     }
 
     /**
