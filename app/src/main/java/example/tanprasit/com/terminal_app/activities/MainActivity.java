@@ -7,16 +7,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ProgressBar;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -26,17 +22,21 @@ import example.tanprasit.com.terminal_app.Constants;
 import example.tanprasit.com.terminal_app.R;
 import example.tanprasit.com.terminal_app.models.Device;
 import example.tanprasit.com.terminal_app.networks.URLBuilder;
-import example.tanprasit.com.terminal_app.networks.VollySingleton;
+import example.tanprasit.com.terminal_app.networks.Volley.RequestTask;
 import example.tanprasit.com.terminal_app.services.GPSTracker;
 
 public class MainActivity extends AppCompatActivity {
 
     private final Gson gson = new Gson();
+    private final Context context = this;
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setLoadingAnimation(true);
 
         //Check if device info is exists in storage.
         Context context = getApplicationContext();
@@ -48,23 +48,23 @@ public class MainActivity extends AppCompatActivity {
         // If not register the device to server
         if (null == deviceString) {
             registerDeviceDetails();
-            reloadActivity();
         } else {
             updateDeviceObject();
-            // Intent to web activity
-//            Toast.makeText(this, "Loading notifications...", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, WebActivity.class);
-            startActivity(intent);
+        }
+    }
+
+    private void setLoadingAnimation(boolean b) {
+        this.spinner = (ProgressBar) findViewById(R.id.loadingBar);
+        if (b) {
+            this.spinner.setVisibility(View.VISIBLE);
+        } else {
+            this.spinner.setVisibility(View.GONE);
         }
     }
 
     private void updateDeviceObject() {
         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
         String deviceString = sharedPreferences.getString(Constants.DEVICE_OBJECT, null);
-
-        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
-        final String latitude = String.valueOf(gpsTracker.getLatitude());
-        final String longitude = String.valueOf(gpsTracker.getLongitude());
 
         String url = "";
         URLBuilder urlBuilder;
@@ -79,125 +79,54 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        // Instantiate the RequestQueue.
-        RequestQueue queue = VollySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
+        new RequestTask(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.clear();
+                editor.putString(Constants.DEVICE_OBJECT, response);
+                editor.apply();
 
-                        editor.clear();
-                        editor.putString(Constants.DEVICE_OBJECT, response);
-                        editor.apply();
-                    }
-                }, new Response.ErrorListener() {
+                // Intent to web activity
+                Intent intent = new Intent(context, WebActivity.class);
+                startActivity(intent);
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Something is wrong", Toast.LENGTH_SHORT).show();
+                Log.e("Update device error", String.valueOf(error.networkResponse.statusCode));
+                reloadActivity();
             }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("model", Build.MODEL);
-                params.put("manufacturer", Build.MANUFACTURER);
-                params.put("sdk_version", String.valueOf(Build.VERSION.SDK_INT));
-                params.put("product", Build.PRODUCT);
-                params.put("serial_number", Build.SERIAL);
-
-                if (!latitude.equals(String.valueOf(0d)) && !longitude.equals(String.valueOf(0d))) {
-                    params.put("latitude", latitude);
-                    params.put("longitude", longitude);
-                }
-
-                return params;
-            }
-        };
-
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                // 35 seconds timeout
-                35000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
-
-    private void reloadActivity() {
-//        Toast.makeText(getApplicationContext(), "Finished registering current device, reloading...", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        }, getApplicationContext()).sendGetRequest(url);
     }
 
     private void registerDeviceDetails() {
         URLBuilder urlBuilder = new URLBuilder();
         String url = urlBuilder.getDeviceRegisterUrl();
 
-        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
-        final String latitude = String.valueOf(gpsTracker.getLatitude());
-        final String longitude = String.valueOf(gpsTracker.getLongitude());
+        new RequestTask(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Instantiate the RequestQueue.
-        RequestQueue queue = VollySingleton.getInstance(this.getApplicationContext()).getRequestQueue();
+                editor.clear();
+                editor.putString(Constants.DEVICE_OBJECT, response);
+                editor.apply();
 
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                        editor.clear();
-                        editor.putString(Constants.DEVICE_OBJECT, response);
-                        editor.apply();
-                    }
-                }, new Response.ErrorListener() {
+                // Intent to web activity
+                Intent intent = new Intent(context, WebActivity.class);
+                startActivity(intent);
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "Something went wrong during registration", Toast.LENGTH_SHORT).show();
+                Log.e("Register error code", String.valueOf(error.networkResponse.statusCode));
+                reloadActivity();
             }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("model", Build.MODEL);
-                params.put("manufacturer", Build.MANUFACTURER);
-                params.put("sdk_version", String.valueOf(Build.VERSION.SDK_INT));
-                params.put("product", Build.PRODUCT);
-                params.put("serial_number", Build.SERIAL);
-
-                if (!latitude.equals(String.valueOf(0d)) && !longitude.equals(String.valueOf(0d))) {
-                    params.put("latitude", latitude);
-                    params.put("longitude", longitude);
-                }
-
-                return params;
-            }
-        };
-
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                // 35 seconds timeout
-                35000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        }, getApplicationContext()).sendPostRequest(url, generateDeviceParams());
     }
 
     @Override
@@ -213,5 +142,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void reloadActivity() {
+        setLoadingAnimation(false);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private Map<String, String> generateDeviceParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put("model", Build.MODEL);
+        params.put("manufacturer", Build.MANUFACTURER);
+        params.put("sdk_version", String.valueOf(Build.VERSION.SDK_INT));
+        params.put("product", Build.PRODUCT);
+        params.put("serial_number", Build.SERIAL);
+
+        GPSTracker gpsTracker = new GPSTracker(getApplicationContext());
+        final String latitude = String.valueOf(gpsTracker.getLatitude());
+        final String longitude = String.valueOf(gpsTracker.getLongitude());
+
+        if (!latitude.equals(String.valueOf(0d)) && !longitude.equals(String.valueOf(0d))) {
+            params.put("latitude", latitude);
+            params.put("longitude", longitude);
+        }
+        return params;
     }
 }

@@ -62,7 +62,7 @@ public class WeatherInstance {
     }
 
     public double getTemperature() {
-        return temperature;
+        return (temperature - 32) * (5 / 9d) ;
     }
 
     public void setTemperature(double temperature) {
@@ -94,7 +94,7 @@ public class WeatherInstance {
     }
 
     public double getTemperatureMax() {
-        return temperatureMax;
+        return (temperatureMax - 32) * (5 / 9d);
     }
 
     public void setTemperatureMax(double temperatureMax) {
@@ -102,7 +102,7 @@ public class WeatherInstance {
     }
 
     public double getTemperatureMin() {
-        return temperatureMin;
+        return (temperatureMin - 32) * (5 / 9d);
     }
 
     public void setTemperatureMin(double temperatureMin) {

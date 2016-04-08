@@ -7,15 +7,17 @@
     tools:context="example.tanprasit.com.terminal_app.terminal_app.WebActivity">
 
     <fragment
-        android:name="example.tanprasit.com.terminal_app.fragments.NotificationFragment"
         android:id="@+id/fragment_web"
+        android:name="example.tanprasit.com.terminal_app.fragments.NotificationFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_web" />
 
     <fragment
-        android:name="example.tanprasit.com.terminal_app.fragments.WeatherFragment"
         android:id="@+id/fragment_weather"
+        android:name="example.tanprasit.com.terminal_app.fragments.WeatherFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_weather" />
 
 </LinearLayout>

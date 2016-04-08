@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,8 @@ import example.tanprasit.com.terminal_app.activities.MainActivity;
 import example.tanprasit.com.terminal_app.models.Device;
 import example.tanprasit.com.terminal_app.models.Notification;
 import example.tanprasit.com.terminal_app.networks.URLBuilder;
-import example.tanprasit.com.terminal_app.networks.VollySingleton;
+import example.tanprasit.com.terminal_app.networks.Volley.RequestTask;
+import example.tanprasit.com.terminal_app.networks.Volley.VolleySingleton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -188,35 +190,22 @@ public class NotificationFragment extends Fragment {
         URLBuilder urlBuilder = new URLBuilder();
         String url = urlBuilder.getDeviceUrl(device.getId());
 
-        // Instantiate the RequestQueue.
-        RequestQueue queue = VollySingleton.getInstance(getActivity().getApplicationContext()).getRequestQueue();
-
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
+        new RequestTask(new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.DEVICE_DETAILS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                        editor.clear();
-                        editor.putString(Constants.DEVICE_OBJECT, response);
-                        editor.apply();
-
-                    }
-                }, new Response.ErrorListener() {
+                editor.clear();
+                editor.putString(Constants.DEVICE_OBJECT, response);
+                editor.apply();
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Something is wrong", Toast.LENGTH_SHORT).show();
+                Log.e("notification error code", String.valueOf(error.networkResponse.statusCode));
             }
-        });
-
-        stringRequest.setRetryPolicy( new DefaultRetryPolicy(
-                5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        }, getActivity()).sendGetRequest(url);
     }
 }

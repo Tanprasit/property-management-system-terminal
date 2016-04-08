@@ -12,4 +12,8 @@ public final class Constants {
     public static final String WEATHER_API_KEY = "809158924a11de04147d48b2d7f83d89";
     public static final String WEATHER_RESPONSE = "com.tanprasit.example.WEATHER_RESPONSE";
     public static final String TIMEZONE_UK = "Europe/London";
+    public static final String SECRET = "1234";
+    public static final String USERNAME = "admin";
+    public static final String GET = "GET";
+    public static final String POST = "POST";
 }

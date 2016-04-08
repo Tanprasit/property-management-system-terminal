@@ -1,4 +1,4 @@
-package example.tanprasit.com.terminal_app.networks;
+package example.tanprasit.com.terminal_app.networks.Volley;
 
 import android.content.Context;
 
@@ -10,21 +10,21 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by luketanprasit on 08/03/2016.
  */
-public class VollySingleton {
+public class VolleySingleton {
 
-    private static VollySingleton mInstance;
+    private static VolleySingleton mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;
 
-    private VollySingleton(Context context) {
+    private VolleySingleton(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
     }
 
-    public static synchronized VollySingleton getInstance(Context context) {
+    public static synchronized VolleySingleton getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new VollySingleton(context);
+            mInstance = new VolleySingleton(context);
         }
         return mInstance;
     }

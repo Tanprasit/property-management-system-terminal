@@ -3,7 +3,7 @@ package example.tanprasit.com.terminal_app.services;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -12,9 +12,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
 import example.tanprasit.com.terminal_app.Constants;
-import example.tanprasit.com.terminal_app.networks.URLBuilder;
-import example.tanprasit.com.terminal_app.networks.VollyCallback;
-import example.tanprasit.com.terminal_app.networks.VollySingleton;
+import example.tanprasit.com.terminal_app.networks.Volley.VolleyCallback;
+import example.tanprasit.com.terminal_app.networks.Volley.VolleySingleton;
 
 /**
  * Created by luketanprasit on 11/03/2016.
@@ -43,7 +42,7 @@ public class WeatherService extends IntentService {
         if (null == url)
             throw new RuntimeException("Missing url from weather fragment");
 
-        getWeatherData(url, new VollyCallback() {
+        getWeatherData(url, new VolleyCallback() {
             @Override
             public void onSuccess(String response) {
                 Intent intentResponse = new Intent();
@@ -56,19 +55,19 @@ public class WeatherService extends IntentService {
 
     }
 
-    private void getWeatherData(String url, final VollyCallback vollyCallback) {
+    private void getWeatherData(String url, final VolleyCallback volleyCallback) {
         //        Do work here
-        RequestQueue requestQueue = VollySingleton.getInstance(getApplicationContext()).getRequestQueue();
+        RequestQueue requestQueue = VolleySingleton.getInstance(getApplicationContext()).getRequestQueue();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                vollyCallback.onSuccess(response);
+                volleyCallback.onSuccess(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                throw new RuntimeException(error.getMessage());
+                Log.e("WeatherService code", String.valueOf(error.networkResponse.statusCode));
             }
         });
 

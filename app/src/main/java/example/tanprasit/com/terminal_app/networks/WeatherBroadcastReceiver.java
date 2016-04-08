@@ -385,7 +385,7 @@ public class WeatherBroadcastReceiver extends BroadcastReceiver {
         }
 
         if (maxTempView != null) {
-            String maxTemp = String.valueOf((int) weatherInstance.getTemperatureMax()) + (char) 0x00B0;;
+            String maxTemp = String.valueOf((int) weatherInstance.getTemperatureMax()) + (char) 0x00B0 + "C";;
             maxTempView.setText(maxTemp);
             if (this.iconAltColourScheme.contains(this.weatherIcon)) {
                 maxTempView.setTextColor(this.context.getResources().getColor(R.color.altTextColor));
