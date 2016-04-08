@@ -151,8 +151,12 @@ public class NotificationFragment extends Fragment {
 
             if (deviceString != null) {
                 this.device = gson.fromJson(deviceString, Device.class);
-
                 int notificationListSize = this.device.getNotificationsList().size();
+
+                if (this.notificationIndex >= notificationListSize - 1) {
+                    this.notificationIndex = notificationListSize - 1;
+                }
+
                 if (notificationListSize > 0) {
                     Notification notification = this.device.getNotificationsList().get(this.notificationIndex);
                     this.notificationIndex = (this.notificationIndex + 1) % notificationListSize;
