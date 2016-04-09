@@ -14,12 +14,8 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -31,7 +27,6 @@ import example.tanprasit.com.terminal_app.models.Device;
 import example.tanprasit.com.terminal_app.models.Notification;
 import example.tanprasit.com.terminal_app.networks.URLBuilder;
 import example.tanprasit.com.terminal_app.networks.Volley.RequestTask;
-import example.tanprasit.com.terminal_app.networks.Volley.VolleySingleton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -153,11 +148,16 @@ public class NotificationFragment extends Fragment {
                 this.device = gson.fromJson(deviceString, Device.class);
                 int notificationListSize = this.device.getNotificationsList().size();
 
-                if (this.notificationIndex >= notificationListSize - 1) {
-                    this.notificationIndex = notificationListSize - 1;
-                }
-
                 if (notificationListSize > 0) {
+
+                    // Prevents index out of bounds when we remove notifications from device between
+                    // fragment change.
+                    int maxIndex = notificationListSize - 1;
+
+                    if (this.notificationIndex >= maxIndex) {
+                        this.notificationIndex = maxIndex;
+                    }
+
                     Notification notification = this.device.getNotificationsList().get(this.notificationIndex);
                     this.notificationIndex = (this.notificationIndex + 1) % notificationListSize;
                     displayNotification(this.mWebView, notification);

@@ -1,14 +1,15 @@
 package example.tanprasit.com.terminal_app.fragments;
 
+import android.app.ActivityManager;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import example.tanprasit.com.terminal_app.Constants;
 import example.tanprasit.com.terminal_app.R;
@@ -37,6 +38,8 @@ public class WeatherFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private WeatherBroadcastReceiver weatherReceiver;
+    private boolean isHidden = false;
+    private GPSTracker gpsTracker;
 
     public WeatherFragment() {
         // Required empty public constructor
@@ -67,6 +70,7 @@ public class WeatherFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        this.gpsTracker = new GPSTracker(getActivity());
     }
 
 
@@ -127,5 +131,33 @@ public class WeatherFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        // When notification screen switches out. Because we are using onHiddenChanged this will
+        // be triggered twice, once on appearing and another when disappearing.
+        if (isHidden) {
+            if (isWeatherServiceRunning()) {
+                String url = new URLBuilder().getWeatherUrl(gpsTracker.getLatitude(), gpsTracker.getLongitude());
+                Intent weatherIntent = new Intent(getActivity(), WeatherService.class);
+                weatherIntent.putExtra(Constants.URL, url);
+                getActivity().startService(weatherIntent);
+            }
+            this.isHidden = false;
+        } else {
+            this.isHidden = true;
+        }
+    }
+
+    private boolean isWeatherServiceRunning() {
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (WeatherService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
