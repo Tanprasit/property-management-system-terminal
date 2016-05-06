@@ -52,7 +52,6 @@ public class WeatherService extends IntentService {
                 sendBroadcast(intentResponse);
             }
         });
-
     }
 
     private void getWeatherData(String url, final VolleyCallback volleyCallback) {
